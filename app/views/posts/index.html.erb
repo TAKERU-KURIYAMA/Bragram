@@ -1,0 +1,12 @@
+<div class = "container">
+  <div class = "row">
+    <% @posts.each do |post| %>
+      <div class = "col-12 text-center border border-primary py-3">
+        <p><%= image_tag post.user.get_profile_image, size:"40x40" %><b><%= link_to post.user.name, user_path(post.user_id) %></b></p>
+        <p><%= link_to post.title, post_path(post.id) %></p>
+        <p><%= image_tag post.image, size: "200x200" %></p>
+        <p><%= link_to "#{post.post_comments.count} コメント", post_path(post.id) %></p>
+      </div>
+    <% end %>
+  </div>
+</div>

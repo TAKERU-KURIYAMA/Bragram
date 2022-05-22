@@ -1,24 +1,34 @@
-# README
+# Bragram
+## サイト概要
+### サイトテーマ
+珍しいものや変わったのも、貴重なものなどを自慢するコミュニティサイト
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+### テーマを選んだ理由
+ツイッターなど、一般的に使われているSNSでは自慢したりマウントをとるような行為は白い目で見られることが多いです。
+ゆえに、マナーのある人々はSNSで大っぴらに自慢をすることで承認欲求を満たそうとすることはありません。
+そこで、承認欲求を満たすために自慢をするためのサイトというものを考えました。
+自慢をするためのサイトであれば、見る人も自慢だとわかったうえで見ることになります。
+なので、不意に不愉快になることはありませんし、投稿者もその点を気にせず投稿できるのではないかと考えています。
+人々が心置きなく自慢ができる一方で、他のサイトではなかなか見られない面白いものが見つけやすいサイトになることが期待されます。
 
-Things you may want to cover:
+### ターゲットユーザ
+- 面白いものや貴重なものなど、自慢したいものを持っている人
+- ツイッターなどのSNSで自慢をすることに抵抗がある人
+- 面白いものや珍しいものを探したい人
 
-* Ruby version
 
-* System dependencies
+### 主な利用シーン
+- 自慢をしたいとき
+- 面白いものや珍しいものを見たいとき
+- 自分の興味がある分野に関して、他者の自慢したいものを見たいとき
 
-* Configuration
 
-* Database creation
+## 設計書
+<...>
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## 開発環境
+- OS：Linux(CentOS)
+- 言語：HTML,CSS,JavaScript,Ruby,SQL
+- フレームワーク：Ruby on Rails
+- JSライブラリ：jQuery
+- IDE：Cloud9

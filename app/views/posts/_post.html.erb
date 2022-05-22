@@ -1,0 +1,6 @@
+<div class = "col-12 border border-primary py-3">
+  <p><%= image_tag post.user.get_profile_image, size:"40x40" %><b><%= link_to post.user.name, user_path(post.user_id) %></b></p>
+  <p><%= link_to post.title, post_path(post.id) %></p>
+  <%= image_tag post.image, size: "200x200" %>
+  <p><%= link_to "#{post.post_comments.count} コメント", post_path(post.id) %></p>
+</div>
