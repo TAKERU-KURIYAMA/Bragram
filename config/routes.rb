@@ -7,6 +7,9 @@ Rails.application.routes.draw do
   root :to =>"homes#top"
   post '/homes/guest_sign_in', to: 'homes#guest_sign_in'
   resources :posts, only: [:index, :show, :new, :create, :destroy] do
+    collection do
+     get 'search'
+    end
     resource :favorites, only: [:create, :destroy]
     resource :rares, only: [:create, :destroy]
     resource :wonderfuls, only: [:create, :destroy]
