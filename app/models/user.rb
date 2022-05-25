@@ -6,6 +6,9 @@ class User < ApplicationRecord
 
   has_many :posts,dependent: :destroy
   has_many :post_comments, dependent: :destroy
+  has_many :favorites, dependent: :destroy
+  has_many :rares, dependent: :destroy
+  has_many :wonderfuls, dependent: :destroy
 
   has_one_attached :profile_image
 
@@ -14,8 +17,8 @@ class User < ApplicationRecord
   validates :login_ID, uniqueness: true
 
 
-   def get_profile_image
-    (profile_image.attached?) ? profile_image : 'Bragram.jpg'
+  def get_profile_image
+   (profile_image.attached?) ? profile_image : 'Bragram.jpg'
   end
 
 end

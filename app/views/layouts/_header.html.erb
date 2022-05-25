@@ -4,6 +4,7 @@
       <div class="row navbar-collapse" id="navbarNavDropdown">
           <% if user_signed_in? %>
             <div class="col-sm-5">
+              <p><%= image_tag current_user.get_profile_image, size:"40x40" %><b><%= link_to current_user.name, user_path(current_user.id) %></b></p>
             </div>
           <div class="col-sm-5">
             <div>
@@ -51,6 +52,11 @@
                 <li class="nav-item">
                   <%= link_to new_user_registration_path, class: "nav-link text-light" do %>
                   SignUp
+                  <% end %>
+                </li>
+                <li class="nav-item">
+                  <%= link_to homes_guest_sign_in_path, method: :post, class: "nav-link text-light" do %>
+                    GuestLogin
                   <% end %>
                 </li>
           <% end %>

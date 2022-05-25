@@ -7,10 +7,13 @@ class UsersController < ApplicationController
   def edit
     @user = current_user
   end
-  def update
 
-    @user.update(user_params)
-    redirect_to user_path(current_user.id)
+  def update
+    if @user.update(user_params)
+      redirect_to user_path(current_user.id)
+    else
+      redirect_to root_path
+    end
   end
 
 
