@@ -2,6 +2,9 @@ class PostsController < ApplicationController
   before_action :set_q, only: [:index, :search]
   def index
     @posts = Post.all
+    if params[:tag_name]
+      @posts = Post.tagged_with("#{params[:tag_name]}")
+    end
   end
   
   def search
@@ -37,7 +40,7 @@ class PostsController < ApplicationController
   private
 
   def post_params
-    params.require(:post).permit(:title, :body, :image)
+    params.require(:post).permit(:title, :body, :image, :tag_list)
   end
   
   def set_q

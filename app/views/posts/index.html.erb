@@ -1,16 +1,19 @@
 <div class = "container">
-<h1>投稿を検索</h1>
-<%= search_form_for @q, url: search_posts_path do |f| %>
- 　<%= f.text_field :title_or_body_cont, class: "search-form", placeholder: "キーワード検索" %>
-   <%= f.submit "検索", class: "search-btn" %>
-<% end %>
   <div class = "row justify-content-center">
     <div class = "col-md-6">
       <div class = "row">
+        <h1>投稿を検索</h1>
+        <div class = "col-12 text-center">
+          <%= search_form_for @q, url: search_posts_path do |f| %>
+           　<%= f.text_field :title_or_body_cont, class: "search-form", placeholder: "キーワード検索" %>
+             <%= f.submit "検索", class: "search-btn" %>
+          <% end %>
+        </div>
         <% @posts.each do |post| %>
           <div class = "col-12 text-center border border-primary py-3">
             <p><%= image_tag post.user.get_profile_image, size:"40x40" %><b><%= link_to post.user.name, user_path(post.user_id) %></b></p>
             <p><%= link_to post.title, post_path(post.id) %></p>
+            <%= render 'posts/tag_list', tag_list: post.tag_list %>
             <% if post.image.attached? %>
               <p>
                 <%= image_tag post.image, size: "200x200" %>

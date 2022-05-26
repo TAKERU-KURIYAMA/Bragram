@@ -3,11 +3,14 @@
     <div class = "col-md-6">
       <div class = "row">
         <% if @results.length != 0 %>
-            検索結果
+        <div class = "col-12 text-center">
+          <h1>検索結果</h1>
+        </div>
           <% @results.each do |post| %>
             <div class = "col-12 text-center border border-primary py-3">
               <p><%= image_tag post.user.get_profile_image, size:"40x40" %><b><%= link_to post.user.name, user_path(post.user_id) %></b></p>
               <p><%= link_to post.title, post_path(post.id) %></p>
+              <%= render 'posts/tag_list', tag_list: post.tag_list %>
               <% if post.image.attached? %>
                 <p>
                   <%= image_tag post.image, size: "200x200" %>
