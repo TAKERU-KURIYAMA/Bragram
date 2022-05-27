@@ -12,7 +12,7 @@
         <div class = "col-12 text-center">
           <h1>タグ一覧</h1>
           <% @tags.each do |tag| %>
-            <button type="button" class="btn btn-outline-primary btn-sm"><%= link_to tag, posts_path(tag_name: tag) %></button>
+            <button type="button" class="btn btn-outline-primary btn-sm"><%= link_to tag, posts_path(tag_name: tag.name) %></button>
           <% end %>
         </div>
       </div>

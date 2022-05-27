@@ -9,8 +9,9 @@ class UsersController < ApplicationController
   end
 
   def update
+    @user = User.find(params[:id])
     if @user.update(user_params)
-      redirect_to user_path(current_user.id)
+      redirect_to user_path(@user.id)
     else
       redirect_to root_path
     end
@@ -20,6 +21,6 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:name, :profile_image)
+    params.require(:user).permit(:name, :profile_image, :active)
   end
 end

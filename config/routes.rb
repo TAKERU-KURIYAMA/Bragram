@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   }
   root :to =>"homes#top"
   post '/homes/guest_sign_in', to: 'homes#guest_sign_in'
-  resources :posts, only: [:index, :show, :new, :create, :destroy] do
+  resources :posts, only: [:index, :show, :new, :create, :destroy, :update] do
     collection do
      get 'search'
     end

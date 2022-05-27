@@ -21,4 +21,8 @@ class User < ApplicationRecord
    (profile_image.attached?) ? profile_image : 'Bragram.jpg'
   end
 
+  def active_for_authentication?
+    super && (self.active == true)
+  end
+
 end

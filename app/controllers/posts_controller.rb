@@ -6,7 +6,7 @@ class PostsController < ApplicationController
       @posts = Post.tagged_with("#{params[:tag_name]}")
     end
   end
-  
+
   def search
     @results = @q.result.includes(:user)
   end
@@ -31,20 +31,30 @@ class PostsController < ApplicationController
      @post_comment = PostComment.new
   end
 
+  def update
+    @post = Post.find(params[:id])
+    if @post.update(post_params)
+      redirect_to post_path(@post), notice: "Updated"
+    else
+      redirect_to post_path(@post), notice: "Couldn't Update"
+    end
+  end
+
+
   def destroy
     @post = Post.find(params[:id])
     @post.destroy
-    redirect_to post_index_path, notice: "投稿を削除しました。"
+    redirect_to post_index_path, notice: "deleted"
   end
 
   private
 
   def post_params
-    params.require(:post).permit(:title, :body, :image, :tag_list)
+    params.require(:post).permit(:title, :body, :image, :tag_list, :published)
   end
-  
+
   def set_q
     @q = Post.ransack(params[:q])
   end
-  
+
 end
