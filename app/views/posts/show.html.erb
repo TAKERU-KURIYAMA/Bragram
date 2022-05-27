@@ -1,0 +1,381 @@
+<div class = "container">
+  <div class = "row justify-content-center">
+    <div class = "col-sm-6">
+      <div class = "row">
+        <% if @post.published? %>
+        <div class = "col-12 text-center border border-primary py-3">
+            <p><%= image_tag @post.user.get_profile_image, size:"40x40" %><b><%= link_to @post.user.name, user_path(@post.user_id) %></b></p>
+            <p><%= link_to @post.title, post_path(@post.id) %></p>
+            <% if current_user.admin == true %>
+              <div class = "col-12 text-center">
+                <% if @post.published == true %>
+                  <p class = "mb-3"><b class = "text-success">公開</b></p>
+                  <%= form_with model:@post, local:true do |f| %>
+                    <div class="form-group">
+                      <%= f.radio_button :published, "true", {:checked => true}  %>
+                      <%= f.label :active, "公開" %>
+                      <%= f.radio_button :published, "false" %>
+                      <%= f.label :active, "非公開" %>
+                    </div>
+                    <div class="form-group">
+                      <%= f.submit class: 'btn btn-secondary' %>
+                    </div>
+                  <% end %>
+                <% else %>
+                  <p class = "mb-3"><b class = "text-black-50">非公開</b></p>
+                  <%= form_with model:@post, local:true do |f| %>
+                    <div class="form-group">
+                      <%= f.radio_button :published, "true" %>
+                      <%= f.label :active, "公開" %>
+                      <%= f.radio_button :published, "false", {:checked => true}  %>
+                      <%= f.label :active, "非公開" %>
+                    </div>
+                    <div class="form-group">
+                      <%= f.submit class: 'btn btn-secondary' %>
+                    </div>
+                  <% end %>
+                <% end %>
+                <%= link_to 'Destroy', @post, method: :delete, data: { confirm: '本当に消しますか？' }, class: "btn btn-sm btn-danger"%>
+              </div>
+            <% elsif @post.user == current_user  %>
+              <div class = "col-12 text-center">
+              <% if @post.published == true %>
+                <p class = "mb-3"><b class = "text-success">公開</b></p>
+                <%= form_with model:@post, local:true do |f| %>
+                  <div class="form-group">
+                    <%= f.radio_button :published, "true", {:checked => true}  %>
+                    <%= f.label :active, "公開" %>
+                    <%= f.radio_button :published, "false" %>
+                    <%= f.label :active, "非公開" %>
+                  </div>
+                  <div class="form-group">
+                    <%= f.submit class: 'btn btn-secondary' %>
+                  </div>
+                <% end %>
+              <% else %>
+                <p class = "mb-3"><b class = "text-black-50">非公開</b></p>
+                <%= form_with model:@post, local:true do |f| %>
+                  <div class="form-group">
+                    <%= f.radio_button :published, "true" %>
+                    <%= f.label :active, "公開" %>
+                    <%= f.radio_button :published, "false", {:checked => true}  %>
+                    <%= f.label :active, "非公開" %>
+                  </div>
+                  <div class="form-group">
+                    <%= f.submit class: 'btn btn-secondary' %>
+                  </div>
+                <% end %>
+              <% end %>
+              <%= link_to 'Destroy', @post, method: :delete, data: { confirm: '本当に消しますか？' }, class: "btn btn-sm btn-danger"%>
+              </div>
+            <% end %>
+            <%= render 'posts/tag_list', tag_list: @post.tag_list %>
+            <% if @post.image.attached? %>
+              <p>
+                <%= image_tag @post.image, size: "200x200" %>
+              </p>
+            <% end %>
+            <p><%= @post.body %></p>
+            <p>コメント件数：<%= @post.post_comments.count %>
+              <% if @post.favorited_by?(current_user) %>
+                <%= link_to post_favorites_path(@post), method: :delete do %>
+                  <i class="fas fa-heart" style="color:red;"></i><%= @post.favorites.count %> いいね
+                <% end %>
+              <% else %>
+                <%= link_to post_favorites_path(@post), method: :post do %>
+                  <i class="far fa-heart"></i><%= @post.favorites.count %> いいね
+                <% end%>
+              <% end %>
+              <% if @post.rared_by?(current_user) %>
+                <%= link_to post_rares_path(@post), method: :delete do %>
+                  <i class="fas fa-star" style="color:yellow;"></i><%= @post.rares.count %> 珍しいね
+                <% end %>
+              <% else %>
+                <%= link_to post_rares_path(@post), method: :post do %>
+                  <i class="far fa-star"></i><%= @post.rares.count %> 珍しいね
+                <% end%>
+              <% end %>
+              <% if @post.wonderfuled_by?(current_user) %>
+                <%= link_to post_wonderfuls_path(@post), method: :delete do %>
+                  <i class="fas fa-thumbs-up"></i><%= @post.wonderfuls.count %> すごいね
+                <% end %>
+              <% else %>
+                <%= link_to post_wonderfuls_path(@post), method: :post do %>
+                  <i class="far fa-thumbs-up"></i><%= @post.wonderfuls.count %> すごいね
+                <% end%>
+              <% end %>
+            </p>
+          </div>
+          <div class = "col-12 text-center py-3">
+            <%= form_with model: [@post, @post_comment] do |f| %>
+              <%= f.text_area :comment, rows: '5', placeholder: "コメント", style: "width: 80%;" %>
+              <%= f.submit "送信する" %>
+            <% end %>
+          </div>
+          <div class = "col-12 text-center border border-primary py-3 my-3">
+            コメント
+            <% @post.post_comments.each do |post_comment| %>
+              <div class = "border-bottom border-info py-3">
+                <p><%= image_tag post_comment.user.get_profile_image, size:"40x40" %><b class = "mr-2"><%= link_to post_comment.user.name, user_path(post_comment.user_id) %></b><span><%= post_comment.created_at.strftime('%Y/%m/%d') %></span></p>
+                <p><%= post_comment.comment %></p>
+                <% if post_comment.user == current_user %>
+                  <p><%= link_to "削除", post_post_comment_path(post_comment.post, post_comment), method: :delete %></p>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+          <% else %>
+
+            <% if current_user.admin == true %>
+<div class = "col-12 text-center border border-primary py-3">
+            <p><%= image_tag @post.user.get_profile_image, size:"40x40" %><b><%= link_to @post.user.name, user_path(@post.user_id) %></b></p>
+            <p><%= link_to @post.title, post_path(@post.id) %></p>
+            <% if current_user.admin == true %>
+              <div class = "col-12 text-center">
+                <% if @post.published == true %>
+                  <p class = "mb-3"><b class = "text-success">公開</b></p>
+                  <%= form_with model:@post, local:true do |f| %>
+                    <div class="form-group">
+                      <%= f.radio_button :published, "true", {:checked => true}  %>
+                      <%= f.label :active, "公開" %>
+                      <%= f.radio_button :published, "false" %>
+                      <%= f.label :active, "非公開" %>
+                    </div>
+                    <div class="form-group">
+                      <%= f.submit class: 'btn btn-secondary' %>
+                    </div>
+                  <% end %>
+                <% else %>
+                  <p class = "mb-3"><b class = "text-black-50">非公開</b></p>
+                  <%= form_with model:@post, local:true do |f| %>
+                    <div class="form-group">
+                      <%= f.radio_button :published, "true" %>
+                      <%= f.label :active, "公開" %>
+                      <%= f.radio_button :published, "false", {:checked => true}  %>
+                      <%= f.label :active, "非公開" %>
+                    </div>
+                    <div class="form-group">
+                      <%= f.submit class: 'btn btn-secondary' %>
+                    </div>
+                  <% end %>
+                <% end %>
+                <%= link_to 'Destroy', @post, method: :delete, data: { confirm: '本当に消しますか？' }, class: "btn btn-sm btn-danger"%>
+              </div>
+            <% elsif @post.user == current_user  %>
+              <div class = "col-12 text-center">
+              <% if @post.published == true %>
+                <p class = "mb-3"><b class = "text-success">公開</b></p>
+                <%= form_with model:@post, local:true do |f| %>
+                  <div class="form-group">
+                    <%= f.radio_button :published, "true", {:checked => true}  %>
+                    <%= f.label :active, "公開" %>
+                    <%= f.radio_button :published, "false" %>
+                    <%= f.label :active, "非公開" %>
+                  </div>
+                  <div class="form-group">
+                    <%= f.submit class: 'btn btn-secondary' %>
+                  </div>
+                <% end %>
+              <% else %>
+                <p class = "mb-3"><b class = "text-black-50">非公開</b></p>
+                <%= form_with model:@post, local:true do |f| %>
+                  <div class="form-group">
+                    <%= f.radio_button :published, "true" %>
+                    <%= f.label :active, "公開" %>
+                    <%= f.radio_button :published, "false", {:checked => true}  %>
+                    <%= f.label :active, "非公開" %>
+                  </div>
+                  <div class="form-group">
+                    <%= f.submit class: 'btn btn-secondary' %>
+                  </div>
+                <% end %>
+              <% end %>
+              <%= link_to 'Destroy', @post, method: :delete, data: { confirm: '本当に消しますか？' }, class: "btn btn-sm btn-danger"%>
+              </div>
+            <% end %>
+            <%= render 'posts/tag_list', tag_list: @post.tag_list %>
+            <% if @post.image.attached? %>
+              <p>
+                <%= image_tag @post.image, size: "200x200" %>
+              </p>
+            <% end %>
+            <p><%= @post.body %></p>
+            <p>コメント件数：<%= @post.post_comments.count %>
+              <% if @post.favorited_by?(current_user) %>
+                <%= link_to post_favorites_path(@post), method: :delete do %>
+                  <i class="fas fa-heart" style="color:red;"></i><%= @post.favorites.count %> いいね
+                <% end %>
+              <% else %>
+                <%= link_to post_favorites_path(@post), method: :post do %>
+                  <i class="far fa-heart"></i><%= @post.favorites.count %> いいね
+                <% end%>
+              <% end %>
+              <% if @post.rared_by?(current_user) %>
+                <%= link_to post_rares_path(@post), method: :delete do %>
+                  <i class="fas fa-star" style="color:yellow;"></i><%= @post.rares.count %> 珍しいね
+                <% end %>
+              <% else %>
+                <%= link_to post_rares_path(@post), method: :post do %>
+                  <i class="far fa-star"></i><%= @post.rares.count %> 珍しいね
+                <% end%>
+              <% end %>
+              <% if @post.wonderfuled_by?(current_user) %>
+                <%= link_to post_wonderfuls_path(@post), method: :delete do %>
+                  <i class="fas fa-thumbs-up"></i><%= @post.wonderfuls.count %> すごいね
+                <% end %>
+              <% else %>
+                <%= link_to post_wonderfuls_path(@post), method: :post do %>
+                  <i class="far fa-thumbs-up"></i><%= @post.wonderfuls.count %> すごいね
+                <% end%>
+              <% end %>
+            </p>
+          </div>
+          <div class = "col-12 text-center py-3">
+            <%= form_with model: [@post, @post_comment] do |f| %>
+              <%= f.text_area :comment, rows: '5', placeholder: "コメント", style: "width: 80%;" %>
+              <%= f.submit "送信する" %>
+            <% end %>
+          </div>
+          <div class = "col-12 text-center border border-primary py-3 my-3">
+            コメント
+            <% @post.post_comments.each do |post_comment| %>
+              <div class = "border-bottom border-info py-3">
+                <p><%= image_tag post_comment.user.get_profile_image, size:"40x40" %><b class = "mr-2"><%= link_to post_comment.user.name, user_path(post_comment.user_id) %></b><span><%= post_comment.created_at.strftime('%Y/%m/%d') %></span></p>
+                <p><%= post_comment.comment %></p>
+                <% if post_comment.user == current_user %>
+                  <p><%= link_to "削除", post_post_comment_path(post_comment.post, post_comment), method: :delete %></p>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+            <% elsif @post.user == current_user  %>
+<div class = "col-12 text-center border border-primary py-3">
+            <p><%= image_tag @post.user.get_profile_image, size:"40x40" %><b><%= link_to @post.user.name, user_path(@post.user_id) %></b></p>
+            <p><%= link_to @post.title, post_path(@post.id) %></p>
+            <% if current_user.admin == true %>
+              <div class = "col-12 text-center">
+                <% if @post.published == true %>
+                  <p class = "mb-3"><b class = "text-success">公開</b></p>
+                  <%= form_with model:@post, local:true do |f| %>
+                    <div class="form-group">
+                      <%= f.radio_button :published, "true", {:checked => true}  %>
+                      <%= f.label :active, "公開" %>
+                      <%= f.radio_button :published, "false" %>
+                      <%= f.label :active, "非公開" %>
+                    </div>
+                    <div class="form-group">
+                      <%= f.submit class: 'btn btn-secondary' %>
+                    </div>
+                  <% end %>
+                <% else %>
+                  <p class = "mb-3"><b class = "text-black-50">非公開</b></p>
+                  <%= form_with model:@post, local:true do |f| %>
+                    <div class="form-group">
+                      <%= f.radio_button :published, "true" %>
+                      <%= f.label :active, "公開" %>
+                      <%= f.radio_button :published, "false", {:checked => true}  %>
+                      <%= f.label :active, "非公開" %>
+                    </div>
+                    <div class="form-group">
+                      <%= f.submit class: 'btn btn-secondary' %>
+                    </div>
+                  <% end %>
+                <% end %>
+                <%= link_to 'Destroy', @post, method: :delete, data: { confirm: '本当に消しますか？' }, class: "btn btn-sm btn-danger"%>
+              </div>
+            <% elsif @post.user == current_user  %>
+              <div class = "col-12 text-center">
+              <% if @post.published == true %>
+                <p class = "mb-3"><b class = "text-success">公開</b></p>
+                <%= form_with model:@post, local:true do |f| %>
+                  <div class="form-group">
+                    <%= f.radio_button :published, "true", {:checked => true}  %>
+                    <%= f.label :active, "公開" %>
+                    <%= f.radio_button :published, "false" %>
+                    <%= f.label :active, "非公開" %>
+                  </div>
+                  <div class="form-group">
+                    <%= f.submit class: 'btn btn-secondary' %>
+                  </div>
+                <% end %>
+              <% else %>
+                <p class = "mb-3"><b class = "text-black-50">非公開</b></p>
+                <%= form_with model:@post, local:true do |f| %>
+                  <div class="form-group">
+                    <%= f.radio_button :published, "true" %>
+                    <%= f.label :active, "公開" %>
+                    <%= f.radio_button :published, "false", {:checked => true}  %>
+                    <%= f.label :active, "非公開" %>
+                  </div>
+                  <div class="form-group">
+                    <%= f.submit class: 'btn btn-secondary' %>
+                  </div>
+                <% end %>
+              <% end %>
+              <%= link_to 'Destroy', @post, method: :delete, data: { confirm: '本当に消しますか？' }, class: "btn btn-sm btn-danger"%>
+              </div>
+            <% end %>
+            <%= render 'posts/tag_list', tag_list: @post.tag_list %>
+            <% if @post.image.attached? %>
+              <p>
+                <%= image_tag @post.image, size: "200x200" %>
+              </p>
+            <% end %>
+            <p><%= @post.body %></p>
+            <p>コメント件数：<%= @post.post_comments.count %>
+              <% if @post.favorited_by?(current_user) %>
+                <%= link_to post_favorites_path(@post), method: :delete do %>
+                  <i class="fas fa-heart" style="color:red;"></i><%= @post.favorites.count %> いいね
+                <% end %>
+              <% else %>
+                <%= link_to post_favorites_path(@post), method: :post do %>
+                  <i class="far fa-heart"></i><%= @post.favorites.count %> いいね
+                <% end%>
+              <% end %>
+              <% if @post.rared_by?(current_user) %>
+                <%= link_to post_rares_path(@post), method: :delete do %>
+                  <i class="fas fa-star" style="color:yellow;"></i><%= @post.rares.count %> 珍しいね
+                <% end %>
+              <% else %>
+                <%= link_to post_rares_path(@post), method: :post do %>
+                  <i class="far fa-star"></i><%= @post.rares.count %> 珍しいね
+                <% end%>
+              <% end %>
+              <% if @post.wonderfuled_by?(current_user) %>
+                <%= link_to post_wonderfuls_path(@post), method: :delete do %>
+                  <i class="fas fa-thumbs-up"></i><%= @post.wonderfuls.count %> すごいね
+                <% end %>
+              <% else %>
+                <%= link_to post_wonderfuls_path(@post), method: :post do %>
+                  <i class="far fa-thumbs-up"></i><%= @post.wonderfuls.count %> すごいね
+                <% end%>
+              <% end %>
+            </p>
+          </div>
+          <div class = "col-12 text-center py-3">
+            <%= form_with model: [@post, @post_comment] do |f| %>
+              <%= f.text_area :comment, rows: '5', placeholder: "コメント", style: "width: 80%;" %>
+              <%= f.submit "送信する" %>
+            <% end %>
+          </div>
+          <div class = "col-12 text-center border border-primary py-3 my-3">
+            コメント
+            <% @post.post_comments.each do |post_comment| %>
+              <div class = "border-bottom border-info py-3">
+                <p><%= image_tag post_comment.user.get_profile_image, size:"40x40" %><b class = "mr-2"><%= link_to post_comment.user.name, user_path(post_comment.user_id) %></b><span><%= post_comment.created_at.strftime('%Y/%m/%d') %></span></p>
+                <p><%= post_comment.comment %></p>
+                <% if post_comment.user == current_user %>
+                  <p><%= link_to "削除", post_post_comment_path(post_comment.post, post_comment), method: :delete %></p>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+            <% else %>
+            <h3>この投稿は非公開です</h3>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
